@@ -1,6 +1,34 @@
 import React, { Component } from "react";
 
 export default class GioHang extends Component {
+ renderContent = () => {
+return this.props.cartList.map((element) => {
+  return (
+    <tr key={element.id} >
+    <td>{element.id}</td>
+    <td>
+      <img
+        width={50}
+        src={element.image}
+        className="img-fluid"
+        alt="shoe"
+      />
+    </td>
+    <td>{element.name}</td>
+    <td style={{display:"inline-flex"}}>
+      <button onClick={()=> this.props.handleQuantity(element.id,false)} className="btn btn-warning">-</button>
+      <span className="mx-1">{element.soLuong}</span>
+      <button   onClick={()=> this.props.handleQuantity(element.id,true)} className="btn btn-warning">+</button>
+    </td>
+    <td>{element.price.toLocaleString()} đ</td>
+    <td>{(element.price * element.soLuong).toLocaleString()} đ</td>
+    <td>
+      <button onClick={()=> this.props.handleRemove(element.id)} className="btn btn-danger">XÓA</button>
+    </td>
+  </tr>
+  );
+})
+ };
   render() {
     return (
       <div>
@@ -49,28 +77,7 @@ export default class GioHang extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>
-                        <img
-                          width={50}
-                          src="https://bachlongmobile.com/media/catalog/product/cache/2/image/040ec09b1e35df139433887a97daa66f/e/0/e04ffe77f5ca27cbcbf9c654836510d7.jpg"
-                          className="img-fluid"
-                          alt="phone"
-                        />
-                      </td>
-                      <td>IPhone</td>
-                      <td>
-                        <button className="btn btn-warning">-</button>
-                        <span className="mx-1">1</span>
-                        <button className="btn btn-warning">+</button>
-                      </td>
-                      <td>3000</td>
-                      <td>3000</td>
-                      <td>
-                        <button className="btn btn-danger">XÓA</button>
-                      </td>
-                    </tr>
+                   {this.renderContent()}
                   </tbody>
                 </table>
               </div>

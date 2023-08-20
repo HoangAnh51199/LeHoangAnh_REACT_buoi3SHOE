@@ -13,21 +13,92 @@ export default class BaiTapShoe extends Component {
     cartList: [],
   };
 
+  handleRemove =(id) => {
+    console.log(id);
+    const result = window.confirm("Bạn có muốn xóa không?");
+   
+   if(result){
+    const data = [...this.state.cartList];
+    const index = data.findIndex((element) => {
+      return element.id === id;
+    });
+
+    data.splice(index, 1);
+
+    this.setState({
+      cartList:data,
+    });
+
+    // this.setState({
+    //   cartList:this.state.cartList.filter((element)=>element.id !==id)
+    //   //chỉ filter trùng id,id còn lại giữ yên (quét toàn bộ data nhiều dùng trên tìm thấy thì dừng lại)
+    //filter trả về mảng mới ,ko thay doi giá trị data trước
+    // })
+   }
+  };
+
+  handleQuantity = (id, isIncrease) => {
+    console.log("id", id);
+    console.log("isIncrease", isIncrease);
+
+    const data = [...this.state.cartList];
+    const index = data.findIndex((element) => {
+      return element.id === id;
+    });
+
+    if (isIncrease) {
+      //tăng số lượng 1
+      data[index].soLuong += 1;
+    } else {
+      //giảm số lượng 1
+      if (data[index].soLuong === 1) {
+        //hien confirm muon xoa
+        const result = window.confirm("Bạn có muốn xóa không ?");
+        if (result) {
+          //xóa sản phẩm
+          data.splice(index, 1);
+        } else {
+          //ko lam gi het
+        }
+      } else {
+        //giảm bình thường
+        data[index].soLuong -= 1;
+      }
+    }
+    this.setState({
+      cartList: data,
+    });
+  };
+
   addToCart = (shoe) => {
     //console.log(shoe);
     //this.state.cartList.push(shoe);
-    //cách 2: cho const data 
-    const data =[...this.state.cartList];
-    data.push({...shoe,soLuong: 1}); //es6 spread operator thêm thuộc tính trong 1 đối tượng
-    
+    //cách 2: cho const data
+    const data = [...this.state.cartList];
+
+    const index = data.findIndex((element) => {
+      return element.id === shoe.id;
+    });
+
+    console.log(index);
+    if (index !== -1) {
+      //index =0
+      //tăng số lượng sp
+      data[index].soLuong += 1;
+    } else {
+      //push vào mảng giỏ hảng
+      data.push({ ...shoe, soLuong: 1 }); //es6 spread operator thêm thuộc tính trong 1 đối tượng
+    }
+
     this.setState(
-      {  
-      // cartList: this.state.cartList,
-      cartList: data,
+      {
+        // cartList: this.state.cartList,
+        cartList: data,
       },
       () => {
         console.log(this.state.cartList);
-      });
+      }
+    );
   };
 
   getShoeDetail = (shoe) => {
@@ -53,7 +124,11 @@ export default class BaiTapShoe extends Component {
     return (
       <div>
         <Header />
-        <GioHang cartList={this.state.cartList} />
+        <GioHang
+          handleRemove={this.handleRemove}
+          handleQuantity={this.handleQuantity}
+          cartList={this.state.cartList}
+        />
 
         <DanhSachListShoe
           addToCart={this.addToCart}
